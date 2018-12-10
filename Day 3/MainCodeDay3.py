@@ -4,7 +4,7 @@ inputList = x.split("\n")
 cinput.close()
 
 def modifylist(lst):
-        lst = [elt.strip() if type(elt) is str else elt for elt in lst] #This simply converts every element of a list into an intiger
+        lst = [elt.strip() if type(elt) is str else elt for elt in lst] #This simply removes all white space from all elements of a list
         while '' in lst:
                 lst.remove('')
         return lst

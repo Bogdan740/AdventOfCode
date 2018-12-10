@@ -56,14 +56,14 @@ for i in range(len(inputList)):
             for z in range(smm1):
                     grid2[smm2 + x][smm3 + z] +=1
                     
-overlap = 0
+intersect = 0
 
 for i in grid2:
     for x in i:
         if x >= 2:
-            overlap += 1
+            intersect += 1
             
-print(overlap)
+print(intersect)
 
 #Code By Bogdan Cuciureanu  # NOTE when using this code don't forget to use your own input
 #Any suggestions on how to make it better will not be ignored, feel free to submit your code :)

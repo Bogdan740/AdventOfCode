@@ -4,7 +4,7 @@ inputList = x.split("\n")
 cinput.close()
 
 def modifylist(lst):
-        lst = [elt.strip() if type(elt) is str else elt for elt in lst]
+        lst = [elt.strip() if type(elt) is str else elt for elt in lst] #This simply converts every element of a list into an intiger
         while '' in lst:
                 lst.remove('')
         return lst
@@ -64,5 +64,8 @@ for i in grid2:
             overlap += 1
             
 print(overlap)
+
+#Code By Bogdan Cuciureanu  # NOTE when using this code don't forget to use your own input
+#Any suggestions on how to make it better will not be ignored, feel free to submit your code :)
 
             

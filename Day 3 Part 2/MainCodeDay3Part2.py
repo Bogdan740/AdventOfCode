@@ -68,13 +68,12 @@ for i in range(len(inputList)):
         smm1 = int(width[i])
         smm2 = int(coordy[i])
         smm3 = int(coordx[i])
-        print(i)
         for x in range(smm):
-                if tester == (smm1 * smm2) and tester > 0:
-                        print(inputList[i])
                 for z in range(smm1):
                         if (grid2[smm2+x][smm3+z]) == 1:
                                 tester +=1
+                if tester == (smm * smm1) and tester > 0:
+                                print(inputList[i])
                                 
                 
 

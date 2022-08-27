@@ -1,4 +1,4 @@
-f = open("2021/D6/testdata.txt", "r")
+f = open("testdata.txt", "r")
 testData = f.read()
 f.close()
 

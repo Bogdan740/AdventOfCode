@@ -4,6 +4,19 @@ inp = f.read()
 a = inp.split('\n')
 b = list(map(lambda x :(x[:len(x)//2],x[len(x)//2:]),a))
 
+def binary_search(arr, x):
+    low = 0
+    high = len(arr) - 1
+    mid = 0
+    while low <= high:
+        mid = (high + low) // 2
+        if arr[mid] < x:
+            low = mid + 1
+        elif arr[mid] > x:
+            high = mid - 1
+        else:
+            return mid
+    return -1
 def priority(x):
   o = ord(x)
   if(o > 96):

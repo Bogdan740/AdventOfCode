@@ -1,29 +1,43 @@
 f = open("input.txt", "r")
 inp = f.read()
 
-a = [x.split() for x in inp.split('\n')]
+a = inp.split('\n')
 
-elfPlays = []
-youPlays = []
+def binary_search(arr, x):
+    low = 0
+    high = len(arr) - 1
+    mid = 0
+    while low <= high:
+        mid = (high + low) // 2
+        if arr[mid] < x:
+            low = mid + 1
+        elif arr[mid] > x:
+            high = mid - 1
+        else:
+            return mid
+    return -1
+  
+def priority(x):
+  o = ord(x)
+  if(o > 96):
+    return o - 96
+  else:
+    return o - 38
 
-score = 0
-draw = {"A": 1,"B" : 2, "C" : 3 }
-win = {"A": 2,"B" : 3, "C" : 1 }
-lose = {"A": 3,"B" : 1, "C" : 2 }
-for i in a:
-  e = i[0]
-  y = i[1]
-  if(y == "Z"): # WIN
-    score+=6 + win[e]
-  elif(y == "Y"): # Draw
-    score+=3 + draw[e]
-  else: #Lose
-    score+=lose[e]
+k = [[a[i],a[i+1],a[i+2]] for i in range(0,len(a),3)]
+k = list(map(lambda x: list(map( lambda y: list(map(priority, y)),x)),k))
+
+badges = []
+
+for group in k:
+  luggage1 = group[0]
+  luggage2 = sorted(group[1])
+  luggage3 = sorted(group[2])
+  for item in luggage1:
+    if(binary_search(luggage2,item) != -1 and binary_search(luggage3, item) != -1):
+      badges.append(item)
+      break    
     
-print(score)
-
-  
-  
-
+print(sum(badges))
 
 

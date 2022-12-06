@@ -1,14 +1,14 @@
 f = open("input.txt", "r")
 inp = f.read()
 
-parsed = inp.split('\n')
+lines = inp.split('\n')
 
 # Find where stack specification ends and commands start
-splitter = parsed.index("")
+splitter = lines.index("")
 
 # Split the input into the stack and commands
-stackSpec,commands = [parsed[i] for i in range(0,splitter-1)], [parsed[i] for i in range(splitter+1,len(parsed))]
-numStacks = int(parsed[splitter-1][-2])
+stackSpec,commands = [lines[i] for i in range(0,splitter-1)], [lines[i] for i in range(splitter+1,len(lines))]
+numStacks = int(lines[splitter-1][-2])
 
 # Initiate stack data structure
 stacks = [[] for i in range(numStacks)]

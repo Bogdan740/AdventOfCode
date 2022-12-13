@@ -1,17 +1,28 @@
+$ cd /
 $ ls
-dir dir1
-dir dir2
-$ cd dir1
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
 $ ls
-10 file1.txt
-20 file2.txt
-dir dir2
-$ cd dir2
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
 $ ls
-30 file3.txt
-40 file4.txt
+584 i
 $ cd ..
 $ cd ..
-$ cd dir2
+$ cd d
 $ ls
-10 hello.txt
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k
+$ cd ..
+$ ls
+14848514 b.txt
+8504156 c.dat
+dir d

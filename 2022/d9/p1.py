@@ -1,36 +1,37 @@
+from math import sqrt
+
 f = open("input.txt", "r")
 
-# Assumes that length and width of forest are the same (It's square shaped)
 inp = f.read()
-rows = [list(map(int,list(i))) for i in inp.split('\n')]
-cols = [ [] for i in range(len(rows[0]))]
+parsed = [i.split(" ") for i in inp.split("\n")]
 
-for row in rows:
-  for i,col in enumerate(row):
-    cols[i].append(col)
-    
-canBeSeen = [ [False for _ in range(len(rows[0]))] for _ in range(len(rows))]
-canBeSeenCounter = 0
-
-def treesVisible(row,x,reversedX = False, reversedY = False):
-  canBeSeenCounter = 0
-  maxHeight = -1
-  for y,val in enumerate(row):
-    yVal = y if not reversedX else len(row)-y-1
-    if(val > maxHeight):
-      maxHeight = val
-      if( (not canBeSeen[x][yVal] and not reversedY)):
-        canBeSeenCounter += 1
-        canBeSeen[x][yVal] = True
-      elif((not canBeSeen[yVal][x] and reversedY)):
-        canBeSeenCounter += 1
-        canBeSeen[yVal][x] = True
-  return canBeSeenCounter
-
+def move_tail(h,t):
+  x,y = h
+  i,j = t
+  dist = sqrt(((x - i) ** 2) + ((y - j) **2))
+  # If tail is already touching the head then return the current pos of the tail
+  if(dist < 2):
+    return t
+  # If the tail is diagonally displaced from the head - Move towards the head in two orthogonal directions simultaneously
+  j += 1 if (y-j) > 0 else 0 if y-j == 0 else -1
+  i += 1 if (x-i) > 0 else 0 if x-i == 0 else -1
+  return (i,j)
   
-for x,row in enumerate(rows):
-  canBeSeenCounter += treesVisible(row,x)  + treesVisible(row[::-1],x,True)
-for x,col in enumerate(cols):
-  canBeSeenCounter += treesVisible(col,x,False, True)  + treesVisible(col[::-1],x, True, True)
+h,t= (0,0),(0,0) # Initiate head and tail at 0,0
 
-print(canBeSeenCounter)
+seenBefore = {t : 1}
+squaresBeenTo = 1
+  
+for dirLetter,mag in parsed:
+  dirs = {"R" : (1,0), "L" : (-1,0), "U" : (0,1), "D": (0,-1) }
+  dir = dirs[dirLetter]
+  mag = int(mag)
+  for _ in range(mag):
+    h = (h[0] + dir[0], h[1] + dir[1])
+    t = move_tail(h,t) 
+    # print(t,h)
+    if(t not in seenBefore):
+      squaresBeenTo +=1
+      seenBefore[t] = 1
+
+print(squaresBeenTo)

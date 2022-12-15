@@ -1,41 +1,36 @@
 f = open("input.txt", "r")
 
+# Assumes that length and width of forest are the same (It's square shaped)
 inp = f.read()
-parsed = list(filter(lambda x : x != "$ ls",inp.split("\n")[1:])) # Ignore ls commands because it"s ovious where files have been outputted
+rows = [list(map(int,list(i))) for i in inp.split('\n')]
+cols = [ [] for i in range(len(rows[0]))]
 
-directoryTree = ["/"]
-directories = {"/" : []}
-
-for i in parsed:
-  currentDir = "".join(directoryTree)
-  if( i[0] == "$"): # We are being given a command (only 'cd' is left because we filtered out 'ls')
-    goTo = i[5:] # Directory to set as current directory
-    if(goTo == ".."): # Go backwards one level
-      directoryTree.pop()
-    else: 
-      directoryTree.append(goTo)
-      currentDir += goTo
-      if(currentDir not in directories):
-        directories[currentDir] = []
-  else: 
-    if(i[0:3] == "dir"): # Directory
-      directory = i[4:]
-      directories[currentDir].append(currentDir+directory)
-    else: # File with given size
-      size,_ = i.split()
-      directories[currentDir].append(int(size))
-
-total = 0 # Total size for directories <= 100,000
-
-for _ in range(len(directories)):
-  for direc in directories:
-    files = directories[direc] # All files/directories contained within direc
-    if(type(files) != int): # Means we haven't calculated the total size of this directory already
-      if(all([type(item) == int for item in files])): # If all items are ints then we can calculate the total size of the directory
-        directories[direc] = sumFiles = int(sum(files)) # Calculate the sum of the directory
-      else:
-        directories[direc] = [directories[k] if type(k) != int and type(directories[k]) == int else k for k in files]
-total = sum([directories[i] for i in directories if directories[i] <= 100000])    
+for row in rows:
+  for i,col in enumerate(row):
+    cols[i].append(col)
     
-print(total)
+canBeSeen = [ [False for _ in range(len(rows[0]))] for _ in range(len(rows))]
+canBeSeenCounter = 0
 
+def treesVisible(row,x,reversedX = False, reversedY = False):
+  canBeSeenCounter = 0
+  maxHeight = -1
+  for y,val in enumerate(row):
+    yVal = y if not reversedX else len(row)-y-1
+    if(val > maxHeight):
+      maxHeight = val
+      if( (not canBeSeen[x][yVal] and not reversedY)):
+        canBeSeenCounter += 1
+        canBeSeen[x][yVal] = True
+      elif((not canBeSeen[yVal][x] and reversedY)):
+        canBeSeenCounter += 1
+        canBeSeen[yVal][x] = True
+  return canBeSeenCounter
+
+  
+for x,row in enumerate(rows):
+  canBeSeenCounter += treesVisible(row,x)  + treesVisible(row[::-1],x,True)
+for x,col in enumerate(cols):
+  canBeSeenCounter += treesVisible(col,x,False, True)  + treesVisible(col[::-1],x, True, True)
+
+print(canBeSeenCounter)

@@ -30,9 +30,11 @@ for dirLetter,mag in parsed:
   for _ in range(mag):
     h = (h[0] + dir[0], h[1] + dir[1])
     tails[0] = move_tail(h,tails[0])
+    
     for i in range(1,len(tails)):
       tails[i] = move_tail(tails[i-1],tails[i])
-    if(tails[-1] not in seenBefore):
+      
+    if(tails[-1] not in seenBefore): # tails[-1] is the very end tail
       squaresBeenTo +=1
       seenBefore[tails[-1]] = 1
 

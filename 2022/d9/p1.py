@@ -12,7 +12,7 @@ def move_tail(h,t):
   # If tail is already touching the head then return the current pos of the tail
   if(dist < 2):
     return t
-  # If the tail is diagonally displaced from the head - Move towards the head in two orthogonal directions simultaneously
+  # Else, move towards the tail
   j += 1 if (y-j) > 0 else 0 if y-j == 0 else -1
   i += 1 if (x-i) > 0 else 0 if x-i == 0 else -1
   return (i,j)
@@ -29,7 +29,6 @@ for dirLetter,mag in parsed:
   for _ in range(mag):
     h = (h[0] + dir[0], h[1] + dir[1])
     t = move_tail(h,t) 
-    # print(t,h)
     if(t not in seenBefore):
       squaresBeenTo +=1
       seenBefore[t] = 1

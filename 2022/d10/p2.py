@@ -5,10 +5,11 @@ f = open("input.txt", "r")
 inp = f.read()
 parsed = [i.split(" ") for i in inp.split("\n")]
 
-screen = ['K' for _ in range(240)]
-
 def draw(cycle,x,screen):
   screen[cycle-1] = '#' if x-1 <= (cycle -1)%40  <= x+1 else '.'
+
+
+screen = ['' for _ in range(240)]
 x = 1
 cycle = 0
 for cmd in parsed:

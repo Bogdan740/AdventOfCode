@@ -33,8 +33,13 @@ def compare(l,r):
   elif(not lISint and rISint):
     return compare(l,[r])
 
-packets = packets + [[2],[6]]
-sorted_packets = sorted(packets, key=cmp_to_key(compare))
-index_div_1 = sorted_packets.index([2]) + 1
-index_div_2 = sorted_packets.index([6]) + 1
-print(index_div_1 * index_div_2)
+counter2 = 0
+counter6 = 0
+for i in packets:
+  counter2 += (compare(i,[2]) < 0)
+counter6 = 0
+for i in packets + [2]:
+  counter6 += (compare(i,[6]) < 0)
+
+print((counter2 + 1) * (counter6 + 1))
+  

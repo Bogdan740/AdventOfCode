@@ -1,49 +1,53 @@
-f = open("input.txt", "r")
+f = open("sample.txt", "r")
 
 inp = f.read()
-parsed = inp.split("\n")
+# We can treat this like a directed graph where we can only travel towards a square
+# that is one lower or one higher than our current position
+graph = [ [ord(j) for j in i] for i in inp.split("\n")]
+endIndicator = ord("E")
 
-class Monkey:
-  def __init__(self,id, items, operation, test, ifTrue, ifFalse):
-    self.id = id
-    self.things = items
-    self.operation = operation
-    self.test = test
-    self.ifTrue = ifTrue
-    self.ifFalse = ifFalse
-    self.totalInspected = 0
-    
-factorsProduct = 1
-for i in range(0,len(parsed),7):
-  test = int(parsed[i+3].split(" ")[-1]) # How to tell if you should throw current item (what to be divisble by) FORM : Int
-  factorsProduct *= test
+end = None
+
+for i in range(len(graph)):
+  for j,val in enumerate(graph[i]):
+    if(val== endIndicator):
+      end = (i,j)
+graph[end[0]][end[1]] = ord("z")# Set the end value as the highest possible value
+
+
+# Basically depth first search
+def distanceToHighestPoint(graph,start):
+  # Define a 2D array to check if we have been aa vertex before or not
+  minDistance = float('inf')
+  visited = [ [False for _ in i] for i in graph]
+  depth = 0
+  queue = [start]
+  nbours = [(1,0), (-1,0), (0,1), (0,-1)]
+  while(len(queue) != 0):
+    for _ in range(len(queue)):
+      # Current location
+      x,y = queue.pop(0)
+      # Check if we have reached the end node
+      if(graph[x][y] == ord('a')):
+        if(depth < minDistance):
+          minDistance = depth
+      # Add all valid nbours to 
+      for i,j in nbours:
+        nx,ny = x + i, y + j
+        if(0<= nx < len(graph) and 0<= ny < len(graph[0]) and (not visited[nx][ny])):
+          currentHeight = graph[x][y]
+          nHeight = graph[nx][ny]
+          # You can't climb but u can jump like 25 units and live lol, ok :p 
+          if(currentHeight - nHeight <= 1):
+            visited[nx][ny] = True
+            queue.append((nx,ny))
+      
+    # Increment the depth
+    depth+=1
+  return minDistance
   
-monkeys = {}
-for i in range(0,len(parsed),7):
-  monkeyId= i//7 # Monkey identifier
-  startingItems = list(map(int,parsed[i+1].replace(",", "").split(" ")[4:])) # The items that the monkey starts with FORM : [Int]
-  operation = " ".join(parsed[i+2].split(" ")[5:]) # What to do with the stress level FORM : "[operator] [operand]"
-  test = int(parsed[i+3].split(" ")[-1]) # How to tell if you should throw current item (what to be divisble by) FORM : Int
-  trueAction = int(parsed[i+4].split(" ")[-1]) # Who to throw to if test passes FORM : Int
-  falseAction = int(parsed[i+5].split(" ")[-1]) # Who to throw to if test fails FORM : Int
-  monkeys[monkeyId] = Monkey(monkeyId, startingItems, operation, test, trueAction, falseAction)
-
-
-def elapseRound(monkeys):
-  for _,monkey in monkeys.items():
-    for _,item in enumerate(monkey.things):
-      old = item
-      new = eval(monkey.operation + "%" + str(factorsProduct))
-      if(new % monkey.test == 0):
-        monkeys[monkey.ifTrue].things.append(new)
-      else:
-        monkeys[monkey.ifFalse].things.append(new)
-    monkey.totalInspected = monkey.totalInspected + len(monkey.things)
-    monkey.things = []
-
-for i in range(10000):
-  elapseRound(monkeys)
-
-totalInspectedArray = sorted([(monkey.totalInspected) for (_,monkey) in monkeys.items()])
-monkeyBusiness = totalInspectedArray[-1] * totalInspectedArray[-2]
-print(monkeyBusiness)
+  
+print(distanceToHighestPoint(graph,end))
+  
+  
+      

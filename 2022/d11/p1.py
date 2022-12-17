@@ -21,18 +21,16 @@ monkeys = {}
 for i in range(0,len(parsed),7):
   monkeyId= i//7 # Monkey identifier
   startingItems = list(map(int,parsed[i+1].replace(",", "").split(" ")[4:])) # The items that the monkey starts with FORM : [Int]
-  operation = " ".join(parsed[i+2].split(" ")[5:]) # What to do with the stress level FORM : "[operator] [operand]"
+  operation = eval("lambda old:" + " ".join(parsed[i+2].split(" ")[5:])) # What to do with the stress level FORM : "[operator] [operand]"
   test = int(parsed[i+3].split(" ")[-1]) # How to tell if you should throw current item (what to be divisble by) FORM : Int
   trueAction = int(parsed[i+4].split(" ")[-1]) # Who to throw to if test passes FORM : Int
   falseAction = int(parsed[i+5].split(" ")[-1]) # Who to throw to if test fails FORM : Int
-  
   monkeys[monkeyId] = Monkey(monkeyId, startingItems, operation, test, trueAction, falseAction)
 
 def elapseRound(monkeys):
   for _,monkey in monkeys.items():
     for _,item in enumerate(monkey.items):
-      old = item
-      new = eval(monkey.operation)
+      new = monkey.operation(item)
       newDiv3 = floor(new/3)
       if(newDiv3 % monkey.test == 0):
         monkeys[monkey.ifTrue].items.append(newDiv3)

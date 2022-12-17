@@ -31,6 +31,7 @@ for i in range(0,len(parsed),7):
 
 def elapseRound(monkeys):
   for _,monkey in monkeys.items():
+    
     for _,item in enumerate(monkey.things):
       new = monkey.operation(item% factorsProduct)
       if(new % monkey.test == 0):

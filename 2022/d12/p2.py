@@ -1,4 +1,4 @@
-f = open("sample.txt", "r")
+f = open("input.txt", "r")
 
 inp = f.read()
 # We can treat this like a directed graph where we can only travel towards a square
@@ -46,7 +46,7 @@ def distanceToHighestPoint(graph,start):
     depth+=1
   return minDistance
   
-  
+# Figure out the distance from the end to every 'a' and pick the smallest
 print(distanceToHighestPoint(graph,end))
   
   

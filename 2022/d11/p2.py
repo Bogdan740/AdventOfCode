@@ -46,5 +46,4 @@ for i in range(10000):
 
 totalInspectedArray = sorted([(monkey.totalInspected) for (_,monkey) in monkeys.items()])
 monkeyBusiness = totalInspectedArray[-1] * totalInspectedArray[-2]
-print(totalInspectedArray)
 print(monkeyBusiness)

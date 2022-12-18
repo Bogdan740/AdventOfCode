@@ -1,69 +1,20 @@
 f = open("input.txt", "r")
 
-inp = [[tuple(map(int,pair.split(","))) for pair in line.split(" -> ")] for line in f.read().split("\n")]
+sensBeac = [ [(int(k[2][2:-1]),int(k[3][2:-1])), (int(k[-2][2:-1]),int(k[-1][2:]))] for k in [(line.split()) for line in f.read().split("\n")]]
+sensBeac = [ ((sx,sy),(bx,by),abs(sx - bx) + abs(sy-by)) for (sx,sy),(bx,by) in sensBeac]
+sensBeac = sorted(sensBeac, key=lambda x:x[0] )
 
-minX = min(map(min,[[pair[0] for pair in line] for line in inp]))-150
-maxX = max(map(max,[[pair[0] for pair in line] for line in inp]))+150
-maxY = max(map(max,[[pair[1] for pair in line] for line in inp])) + 2
-
-grid = [ ["." for _ in range(minX,maxX+1)] for _ in range(maxY+1)]
-
-# Transform the coordinates so that they fit on our new grid
-
-rocks = [ [ (x-minX,y) for x,y in line] for line in inp]
-sand = 500-minX # x-loc of sand source
-
-
-for rock in rocks:
-  for i in range(len(rock)-1):
-    x1,y1= rock[i]
-    x2,y2= rock[i+1]
-    if(x1 == x2):
-      may = max(y1,y2)
-      miy= min(y1,y2)
-      for j in range(miy,may+1):
-        grid[j][x2] = "#"
-    elif(y1 == y2):
-      mx = max(x1,x2)
-      mix= min(x1,x2)
-      for j in range(mix,mx+1):
-        grid[y1][j] = "#"
-
-grid[-1] = ["#"] * (maxX - minX + 1)
-sandFallingOff = False
-sandCounter = 0
-# Simulate the sand
-while(not sandFallingOff):
-  x,y = sand, 0
-  while(True):
-    #Drop the sand particle down as fasr as you can
-    below = grid[y+1][x]
-    if(below == '.'):
-      x,y = x,y+1
-      continue
-    #Try down and to the left
-    if(x-1 < 0):
-      sandFallingOff = True
-      break
-    downAndLeft = grid[y+1][x-1]
-    if(downAndLeft == '.'):
-      x,y = x-1,y+1
-      continue
-    #Try down and to the right
-    if(x+1 >= len(grid[0])):
-      sandFallingOff = True
-      break
-    downAndRight = grid[y+1][x+1]
-    if(downAndRight == '.'):
-      x,y = x+1,y+1
-      continue
-    sandCounter+=1
-    grid[y][x] = "o"
-    if(x == sand and y == 0):
-      sandFallingOff = True
+mx = 4000000
+totalX = sum(range(1,mx+1))
+for y in range(1,mx+1):
+  x = 0
+  for (sx,sy),(bx,by),distSB in sensBeac:
+    distSR = abs(sy - y)
+    diff = distSB - distSR
+    if(distSB >= distSR):
+      l,r = (sx-diff,sx+diff+1 if sx+diff+1 < mx else mx)
+      if(l <= x and r > x):
+        x = r
+  if(x!=mx):
+    print(x,y, x *4000000 + y)
     break
-
-print(sandCounter)
-  
-        
-

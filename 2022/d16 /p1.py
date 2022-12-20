@@ -1,6 +1,6 @@
 f = open("input.txt", "r")
-valves = {int(str(ord(line.split()[1][0])) + str(ord(line.split()[1][1]))):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:int(str(ord(x[0]))+str(ord(x[1]))),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{},i) for i,line in enumerate(f.read().split("\n"))}
-
+valves = {int(ord(line.split()[1][0])*100 + ord(line.split()[1][1])):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:ord(x[0])*100+ord(x[1]),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{},i) for i,line in enumerate(f.read().split("\n"))}
+start = int(ord('A') + ord('A') * 100)
 for i in valves:
   queue = [i]
   dist = 0
@@ -16,13 +16,11 @@ for i in valves:
           valves[i][2][current] = dist 
       else:
         valves[i][2][current] = dist
-        
       for n in valves[current][1]:
         queue.append(n)    
     dist+=1
 
 open = 2**len(valves)-1
-counter = 0
 DP = {}
 def recurse(valve, time):
   global open
@@ -38,9 +36,7 @@ def recurse(valve, time):
     isOpenIdentifier = 2**(valves[i][3])
     if((open & isOpenIdentifier) == 0):
       continue
-    dist = valves[valve][2][i]
-    timePenalty = dist + 1
-    newTime = time-timePenalty
+    newTime = time-valves[valve][2][i]-1
     if(newTime > 0):
       pressureReleased = newTime * valves[i][0]
       open ^= isOpenIdentifier
@@ -51,6 +47,4 @@ def recurse(valve, time):
   DP[c] = maxP if maxP != -float('inf') else 0
   return DP[c]
 
-
-print(recurse(6565, 30))
-    
+print(recurse(start,30))

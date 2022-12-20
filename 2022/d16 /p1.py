@@ -1,4 +1,4 @@
-f = open("sample.txt", "r")
+f = open("input.txt", "r")
 valves = {int(str(ord(line.split()[1][0])) + str(ord(line.split()[1][1]))):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:int(str(ord(x[0]))+str(ord(x[1]))),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{}) for line in f.read().split("\n")}
 counter = 0
 for i in valves:

@@ -1,10 +1,5 @@
 f = open("input.txt", "r")
-valves = {int(str(ord(line.split()[1][0])) + str(ord(line.split()[1][1]))):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:int(str(ord(x[0]))+str(ord(x[1]))),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{}) for line in f.read().split("\n")}
-counter = 0
-for i in valves:
-  valves[i] = (valves[i][0],valves[i][1],valves[i][2],counter)
-  counter+=1
-
+valves = {int(str(ord(line.split()[1][0])) + str(ord(line.split()[1][1]))):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:int(str(ord(x[0]))+str(ord(x[1]))),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{},i) for i,line in enumerate(f.read().split("\n"))}
 
 for i in valves:
   queue = [i]
@@ -59,5 +54,3 @@ def recurse(valve, time):
 
 print(recurse(6565, 30))
     
-# 16 - 4.5 - 4.6 seconds 
-# tried 1804

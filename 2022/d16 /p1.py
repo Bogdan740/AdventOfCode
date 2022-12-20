@@ -5,10 +5,6 @@ for i in valves:
   valves[i] = (valves[i][0],valves[i][1],valves[i][2],counter)
   counter+=1
 
-first = None
-for i in valves:
-  first = i
-  break
 
 for i in valves:
   queue = [i]
@@ -21,7 +17,8 @@ for i in valves:
         continue
       seenBefore[current] = 1
       if(current in valves[i][2]):
-        valves[i][2][current] = dist if dist < valves[i][2][current] else valves[i][2][current]
+        if(dist < valves[i][2][current]):
+          valves[i][2][current] = dist 
       else:
         valves[i][2][current] = dist
         
@@ -35,15 +32,16 @@ DP = {}
 def recurse(valve, time):
   global open
   if(open == 0):
-    print("DIBE")
     return 0
   c = (valve,time,open)
   if(c in DP):
     return DP[c]
   maxP = -float('inf')
   for i in valves:
-    isOpenIdentifier = 2**valves[i][3]
-    if(open & isOpenIdentifier== 0):
+    if(valves[i][0] == 0):
+      continue
+    isOpenIdentifier = 2**(valves[i][3])
+    if((open & isOpenIdentifier) == 0):
       continue
     dist = valves[valve][2][i]
     timePenalty = dist + 1
@@ -59,6 +57,7 @@ def recurse(valve, time):
   return DP[c]
 
 
-print(recurse(first, 30))
+print(recurse(6565, 30))
     
 # 16 - 4.5 - 4.6 seconds 
+# tried 1804

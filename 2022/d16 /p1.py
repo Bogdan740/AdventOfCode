@@ -1,47 +1,64 @@
 f = open("sample.txt", "r")
-valves = {ord(line.split()[1][1])-65:(int(line.split()[4][5:].replace(";","")),list(map(lambda x:ord(x[0])-65,list(map(lambda x :x.replace(",",""),line.split()[9:]))))) for line in f.read().split("\n")}
+valves = {int(str(ord(line.split()[1][0])) + str(ord(line.split()[1][1]))):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:int(str(ord(x[0]))+str(ord(x[1]))),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{}) for line in f.read().split("\n")}
+counter = 0
+for i in valves:
+  valves[i] = (valves[i][0],valves[i][1],valves[i][2],counter)
+  counter+=1
 
-def distanceFromTo(fromV, toV, valves):
-  queue = [fromV]
+first = None
+for i in valves:
+  first = i
+  break
+
+for i in valves:
+  queue = [i]
   dist = 0
-  while(len(queue) !=0):
-    for _ in range(len(queue)):
+  for j in range(len(valves)):
+    seenBefore = {}
+    for k in range(len(queue)):
       current = queue.pop(0)
-      if(current == toV):
-        return dist
+      if(current in seenBefore):
+        continue
+      seenBefore[current] = 1
+      if(current in valves[i][2]):
+        valves[i][2][current] = dist if dist < valves[i][2][current] else valves[i][2][current]
+      else:
+        valves[i][2][current] = dist
+        
       for n in valves[current][1]:
         queue.append(n)    
     dist+=1
 
-closed = [valve for valve in valves]
-current = 0 # Set our position to AA
-time = 30
-totalP = 0
-while(time >= 0):
+open = 2**len(valves)-1
+counter = 0
+DP = {}
+def recurse(valve, time):
+  global open
+  if(open == 0):
+    print("DIBE")
+    return 0
+  c = (valve,time,open)
+  if(c in DP):
+    return DP[c]
   maxP = -float('inf')
-  chosen = None
-  timePenalty = 0
-  for i in closed:
-    dist = distanceFromTo(current,i,valves)
-    if(time - dist - 1 > 0):
-      pressureReleased = (time-dist-1) * valves[i][0]
-      if(pressureReleased > maxP):
-        maxP = pressureReleased
-        chosen = i
-        timePenalty = dist + 1
-  if(chosen == None):
-    break
-  time -=timePenalty
-  totalP += maxP
-  current = chosen
-  print(chosen)
-  closed.remove(chosen)
+  for i in valves:
+    isOpenIdentifier = 2**valves[i][3]
+    if(open & isOpenIdentifier== 0):
+      continue
+    dist = valves[valve][2][i]
+    timePenalty = dist + 1
+    newTime = time-timePenalty
+    if(newTime > 0):
+      pressureReleased = newTime * valves[i][0]
+      open ^= isOpenIdentifier
+      pressure = pressureReleased + recurse(i,newTime)
+      if(pressure > maxP):
+        maxP = pressure
+      open ^= isOpenIdentifier
+  DP[c] = maxP if maxP != -float('inf') else 0
+  return DP[c]
 
-print(totalP)
-  
+
+print(recurse(first, 30))
     
-    
-  
-  
-  
-    
+# 16 - 4.5 - 4.6 seconds 

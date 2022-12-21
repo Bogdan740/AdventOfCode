@@ -40,8 +40,6 @@ def recurse(valve, time, allowed):
     return DP[c]
   maxP = -float('inf')
   for i in allowed:
-    if(valves[i][0] == 0):
-      continue
     isOpenIdentifier = 2**allowed[i]
     if((open & isOpenIdentifier) == 0):
       continue
@@ -60,18 +58,15 @@ splits = list(sublists([i for i in valves if valves[i][0]!=0]))
 splits = splits[:len(splits)//2]
 maxP = -float('inf')
 
-
-for i,(x,y) in enumerate(splits):
+for (x,y) in splits:
   x+=[start];y+=[start]
   p = 0
   DP = {}
   open = 2**(len(x)+1)-1
-  allowed1 = {val:i for i,val in enumerate(x) } 
-  p += recurse(start,26, allowed1)
+  p += recurse(start,26, {val:i for i,val in enumerate(x) } )
   DP = {}
   open = 2**(len(y)+1)-1
-  allowed2 = {val:i for i,val in enumerate(y)}
-  p += recurse(start,26, allowed2)
+  p += recurse(start,26, {val:i for i,val in enumerate(y)})
   if(p > maxP):
     maxP = p
 

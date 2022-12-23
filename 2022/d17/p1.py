@@ -3,7 +3,7 @@ import time
 f = open("sample.txt","r")
 jetPattern = list(map(lambda x:-1 if x=='<' else 1,f.read()))
 
-drops =  2022
+drops =  10
 #drops = 1000000000000
 toUse = int(drops*1.6)
 chamber = [[0 for _ in range(7)] for _ in range(toUse)]
@@ -92,7 +92,7 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
       if(v):
         time.sleep(t)
         for i in chamber[::-1]:
-          print("".join(i))
+          print("".join(map(str,i)))
         print("-------")      
       sx = pushShape(chamber, shapeID, sx,sy)
       placed = False
@@ -110,7 +110,7 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
       if(v):
         time.sleep(t)
         for i in chamber[::-1]:
-          print("".join(i))
+          print("".join(map(str,i)))
         print("-------")
       sx = pushShape(chamber, shapeID, sx,sy)
       placed = False
@@ -127,7 +127,7 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
       if(v):
         time.sleep(t)
         for i in chamber[::-1]:
-          print("".join(i))
+          print("".join(map(str,i)))
         print("-------")
       sx = pushShape(chamber, shapeID, sx,sy)
       placed = False
@@ -144,7 +144,7 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
       if(v):  
         time.sleep(t)
         for i in chamber[::-1]:
-          print("".join(i))
+          print("".join(map(str,i)))
         print("-------")
       sx = pushShape(chamber, shapeID, sx,sy)
       placed = False
@@ -161,7 +161,7 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
       if(v):  
         time.sleep(t)
         for i in chamber[::-1]:
-          print("".join(i))
+          print("".join(map(str,i)))
         print("-------")
       sx = pushShape(chamber, shapeID, sx,sy)
       placed = False
@@ -177,8 +177,21 @@ def drop(chamber,shapeID, heightToDropFrom,v = False,t = 0):
     
 y = -1
 DP = {}
+
+heights = [0 for _ in range(7)]
 for i in range(drops):
-  a,b = drop(chamber,i%5,y+4)
+  oldY = y
+  a,b = drop(chamber,i%5,y+4, True, 0.5)
+  for j in range(7):
+    heights[j] = chamber[j].count(1)
+  print(heights)
+  diffs = (heights[0]-k for k in heights)
+  ident = (a, i%5,diffs)
+  if(ident in DP):
+    print("PATTERN FOUND at iteration : ",i)
+    break
+  else:
+    DP[ident] = 1
   
 
 print(y+1, drops*4)

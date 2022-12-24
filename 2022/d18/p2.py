@@ -1,73 +1,40 @@
 f = open("input.txt", "r")
-valves = {int(ord(line.split()[1][0])*100 + ord(line.split()[1][1])):(int(line.split()[4][5:].replace(";","")),list(map(lambda x:ord(x[0])*100+ord(x[1]),list(map(lambda x :x.replace(",",""),line.split()[9:])))),{},i) for i,line in enumerate(f.read().split("\n"))}
-start = int(ord('A') + ord('A') * 100)
-for i in valves:
-  queue = [i]
-  dist = 0
-  for j in range(len(valves)):
-    seenBefore = {}
-    for k in range(len(queue)):
-      current = queue.pop(0)
-      if(current in seenBefore):
-        continue
-      seenBefore[current] = 1
-      if(current in valves[i][2]):
-        if(dist < valves[i][2][current]):
-          valves[i][2][current] = dist 
-      else:
-        valves[i][2][current] = dist
-      for n in valves[current][1]:
-        queue.append(n)    
-    dist+=1
-    
-def sublists(xs):
-  l = len(xs)
-  for i in range(1 << l):
-      incl, excl = [], []
-      for j in range(l):
-          if i & (1 << j):
-              incl.append(xs[j])
-          else:
-              excl.append(xs[j])
-      yield (incl,excl)
+cubes= [tuple(map(int,k.split(","))) for k in f.read().split("\n")]
+
+droplet = {}
+directions = ((-1,0,0), (1,0,0), (0,1,0), (0,-1,0), (0,0,-1), (0,0,1))
+minX,maxX,minY,maxY,minZ,maxZ = [float('inf'),-float('inf'),float('inf'),-float('inf'),float('inf'),-float('inf')]
+for x,y,z in cubes:
+  if(x < minX):minX =x
+  elif(x > maxX):maxX = x
+  if(y < minY):minY =y
+  elif(y > maxY):maxY = y
+  if(z < minZ):minZ =z
+  elif(z > maxZ):maxZ = z
   
-def recurse(valve, time, allowed):
-  global open
-  if(open == 0):
-    return 0
-  c = (valve,time,open)
-  if(c in DP):
-    return DP[c]
-  maxP = -float('inf')
-  for i in allowed:
-    isOpenIdentifier = 2**allowed[i]
-    if((open & isOpenIdentifier) == 0):
-      continue
-    newTime = time-valves[valve][2][i]-1
-    if(newTime > 0):
-      pressureReleased = newTime * valves[i][0]
-      open ^= isOpenIdentifier
-      pressure = pressureReleased + recurse(i,newTime,allowed)
-      if(pressure > maxP):
-        maxP = pressure
-      open ^= isOpenIdentifier
-  DP[c] = maxP if maxP != -float('inf') else 0
-  return DP[c]
+  cube = x,y,z
+  droplet[cube] = 1
 
-splits = list(sublists([i for i in valves if valves[i][0]!=0]))
-splits = splits[:len(splits)//2]
-maxP = -float('inf')
+# Floodfill algorithm
+minX-=1;maxX+=1;minY-=1;maxY+=1;minZ-=1;maxZ+=1
+totalVisibleSides = 0
+seenBefore = {}
+queue = [(minX,minY,minZ)]
+while(len(queue) != 0):
+  for _ in range(len(queue)):
+    cx,cy,cz = queue.pop(0)
+    for dx,dy,dz in directions:
+      nx,ny,nz = cx+dx,cy+dy,cz+dz
+      if(minX <= nx <= maxX and minY <= ny <= maxY and minZ <= nz <= maxZ and cube):
+        cube = (nx,ny,nz)
+        if(cube in droplet):
+          totalVisibleSides +=1
+        elif(cube not in droplet and cube not in seenBefore):
+          queue.append(cube)
+          seenBefore[cube] =1 
+        
+        
+      
 
-for (x,y) in splits:
-  x+=[start];y+=[start]
-  p = 0
-  DP = {}
-  open = 2**(len(x)+1)-1
-  p += recurse(start,26, {val:i for i,val in enumerate(x) } )
-  DP = {}
-  open = 2**(len(y)+1)-1
-  p += recurse(start,26, {val:i for i,val in enumerate(y)})
-  if(p > maxP):
-    maxP = p
 
-print(maxP)
+print(totalVisibleSides)

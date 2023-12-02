@@ -1,7 +1,7 @@
 f = open("input.txt", "r")
 parsed = f.read().split("\n")
 
-grid = list(map(lambda x:x.replace(" ","x"),parsed[:-1]))
+grid = list(map(lambda x:x.replace(" ","x"),parsed[:-2]))
 maxWidth = max(map(len,grid))
 grid = [list(x) + ["x"]*(maxWidth-len(x)) for x in grid]
 
@@ -41,8 +41,9 @@ for i in instructions:
   else:
     # Set current direction to new direction
     currentDirection = (currentDirection + turn[i])%4
-
+    
 row = cy+1
 column = cx + 1
 facing = currentDirection
-print(1000*row + 4 * column + 0)
+print(row,column,facing)
+print(1000*row + 4 * column + facing)

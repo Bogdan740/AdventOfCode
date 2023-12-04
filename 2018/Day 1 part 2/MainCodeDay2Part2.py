@@ -1,5 +1,3 @@
-import re
-
 file = open("CodeInputDay2Part2.txt" , "r")
 a = file.read()
 input_lines = a.split("\n")

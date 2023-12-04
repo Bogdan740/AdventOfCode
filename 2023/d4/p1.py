@@ -1,5 +1,5 @@
 lines = None
-with open("test.txt") as fp:
+with open("input.txt") as fp:
     lines = fp.read().split("\n")
 
 parsed = [[l1.split() for l1 in line.split(": ")[1].split("|")] for line in lines]

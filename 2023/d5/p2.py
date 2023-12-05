@@ -36,13 +36,10 @@ for a in range(0,len(seeds),2):
                 if(s_start <= seed_val < s_start+width):
                     seed_val = d_start+(seed_val - s_start)
                     break
+                
             cur_type = dest
         seed+=advance_by if advance_by != 0 and advance_by != float("inf") else 1
         if(seed_val < min_seed_val):
             min_seed_val = seed_val
     
 print(min_seed_val)
-
-#780711947
-
-#4283162641

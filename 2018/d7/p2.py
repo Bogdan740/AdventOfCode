@@ -21,31 +21,34 @@ for y,x in parsed:
     else:
         requirements[x] = [y]
 
-with_no_reqs = set([x for x in nodes if x not in requirements])
-queue = sorted([x for x in with_no_reqs])
-last = [x for x in nodes if x not in requirement_for][0]
+nodes_with_no_reqs = set([x for x in nodes if x not in requirements])
+queue = sorted([x for x in nodes_with_no_reqs])
+last_node = [x for x in nodes if x not in requirement_for][0]
 
 is_done = {}
 num_workers = 5
+time_modifier=60
 second = 0
-assignment={i : (None,None) for i in range(num_workers)}
-while(last not in is_done):
+worker_assignments={i : (None,None) for i in range(num_workers)}
+
+while(last_node not in is_done):
     for worker in range(num_workers):
-        if(assignment[worker] == (None,None) and len(queue) != 0):
+        if(worker_assignments[worker] == (None,None) and len(queue) != 0):
             val = queue.pop(0)
-            assignment[worker] = (val, ord(val)-64+60)
+            worker_assignments[worker] = (val, ord(val)-64+time_modifier)
+            
     for worker in range(num_workers):
-        a,secs_left = assignment[worker]
+        a,secs_left = worker_assignments[worker]
         if(a == None and secs_left == None):
             continue
         if(secs_left != 1):
-            assignment[worker] = (a, secs_left-1)
+            worker_assignments[worker] = (a, secs_left-1)
             continue
         else:
             is_done[a]= True
-            assignment[worker] = (None,None)
+            worker_assignments[worker] = (None,None)
         
-        if(a == last):
+        if(a == last_node):
             is_done[a] = True
             break
         makes_ready = requirement_for[a]

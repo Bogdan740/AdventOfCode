@@ -2,9 +2,6 @@ lines = None
 with open("input.txt", "r") as fp:
     lines = fp.read().split("\n")
 
-# lines=["22333 765"]
-
-
 parsed = [(line.split()[0],int(line.split()[1])) for line in lines]
 strength =  {i:13-j for j,i in enumerate("AKQT98765432J")}
 

@@ -66,7 +66,6 @@ for hand,bid in parsed:
         hand_bid_type.append((hand,bid,1))
     
 
-print(hand_bid_type)
 hand_bid_type_score = []
 for hand,bid,typ in hand_bid_type:
     score = 0
@@ -77,6 +76,3 @@ for hand,bid,typ in hand_bid_type:
 card_bids_sorted = [x[1] for x in sorted(hand_bid_type_score, key=lambda x:(x[2],x[3]))]
 total_winnings = sum(x*(i+1) for i,x in enumerate(card_bids_sorted))
 print(total_winnings)
-
-# 250506580
-# 250807190

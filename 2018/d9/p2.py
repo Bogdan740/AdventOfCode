@@ -1,5 +1,5 @@
 lines = None
-with open("input.txt", "r") as fp:
+with open("test.txt", "r") as fp:
     lines=fp.read()
 
 num_players, max_marble = (int(lines.split()[0]),int(lines.split()[-2]))
@@ -12,6 +12,8 @@ circle = [0]
 
 scores = {}
 for i in range(1,max_marble+1):
+    # if(current == 0 or current == 1):
+        # print(len(circle) ,circle)
     first_cw = (current+1) % len(circle)
     sec_cw = (current+2) % len(circle)
     if(i % 23 == 0):

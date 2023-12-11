@@ -1,5 +1,5 @@
 lines = None
-with open("test.txt", "r") as fp:
+with open("input.txt", "r") as fp:
     r = fp.read()
     lines = r.split("\n")
     dim = len(lines)+1
@@ -13,18 +13,25 @@ for i in range(len(parsed)):
         if(parsed[i][j] == "S"):
             start_x,start_y = j,i
     
-nbours = [(-1,0, "right"), (0,1, "up"), (1,0, "left"), (0,-1, "down")]    
+nbours = [(-1,0, "left"), (0,1, "down"), (1,0, "right"), (0,-1, "up")]    
 can_enter_from_left = {"-", "J", "7"}
 can_enter_from_right = {"-", "L", "F"}
 can_enter_from_up = {"|", "L", "J"}
 can_enter_from_down = {"|", "7", "F"}
-can_enter = {"left" : can_enter_from_left, "right" : can_enter_from_right, "down" : can_enter_from_down, "up" : can_enter_from_up}
-vertical = set(["J", "7", "L", "F", "|"])
+can_enter = {"right" : can_enter_from_left, "left" : can_enter_from_right, "up" : can_enter_from_down, "down" : can_enter_from_up}
+left = (-1,0)
+right = (1,0)
+up = (0,1)
+down = (0,-1)
+
+vertical = {"J", "7", "L", "F", "|"}
 is_vertical = {}
+
+can_go_towards = {"J" : [(-1,0, "left"),(0,-1, "up") ], "7" : [(-1,0, "left"),(0,1, "down")], "|" : [(0,-1, "up"),(0,1, "down")], "-" : [(-1,0, "left"), (1,0, "right")], "L" : [(1,0, "right"), (0,-1, "up")], "F" : [(0,1, "down"),(1,0, "right")],"S" : [(-1,0, "left"),(0,1, "down")]}
 
 def get_neighbours(x,y,grid):
     to_return_nbours = []
-    for nx,ny,direction in nbours:
+    for nx,ny,direction in can_go_towards[grid[y][x]]:
         ce = can_enter[direction]
         cx,cy = x+nx,y+ny
         
@@ -35,19 +42,16 @@ def get_neighbours(x,y,grid):
 
 def BFS(x,y,grid):
     queue = [(i,j,1) for i,j in get_neighbours(x,y,grid)]
-    max_dist = 1
     seen = {(x,y) : True}
     while(len(queue) != 0):
         qx,qy,dist = queue.pop(0)
         if((qx,qy) in seen):
             continue
         else:
-            if(dist > max_dist):
-                max_dist = dist
             seen[(qx,qy)] = True
             if(grid[qy][qx] in vertical):
                 is_vertical[(qx,qy)] = True
-    
+
         queue = queue + [(i,j, dist+1) for i,j in get_neighbours(qx,qy,grid)]
     
     return seen    
@@ -93,7 +97,35 @@ total_ff = {}
 for i in range(len(parsed)):
     for j in range(len(parsed[0])):
         if((j,i) not in total_ff and (j,i) not in seen):
-            inside = len(list(filter(lambda x:(x,i) in seen and (x,i) in is_vertical, range(j,len(parsed[i]))))) %2 != 0
+            to_right = [l if (j+1+ind,i) in seen else "." for ind,l in enumerate(parsed[i][j+1:])]
+            pointer = 0
+            counter = 0
+            while(pointer < len(to_right)):
+                character = to_right[pointer]
+                oc = character
+                ceuoc = character in can_enter_from_up
+                cedoc = character in can_enter_from_down
+                if(character in can_enter_from_right):
+                    pointer+=1
+                    if(pointer >= len(to_right)):
+                        continue
+                    character = to_right[pointer]
+                    while(character == "-" and pointer < len(to_right)):
+                        pointer+=1
+                        character = to_right[pointer]
+                    if(character in can_enter_from_left):
+                        if(ceuoc and character in can_enter_from_up or cedoc and character in can_enter_from_down):
+                            counter+=0
+                        elif(ceuoc and character in can_enter_from_down or cedoc and character in can_enter_from_up):
+                            counter+=1
+                    else:
+                        counter+=2
+                else:
+                    if(character in vertical):
+                        counter+=1
+                pointer+=1
+
+            inside = counter % 2 != 0
             
             te,ff = flood_fill(j,i,parsed, seen)
             if(te or (not te and not inside)):
@@ -107,11 +139,11 @@ count = 0
 for i,x in enumerate(parsed):
     row = ""
     for j,y in enumerate(parsed[i]):
-        if( (j,i) in seen):
-            row+=y
-        elif( (j,i) in total_ff and total_ff[(j,i)]):
+        if( (j,i) in total_ff and total_ff[(j,i)]):
             row+="X"
             count+=1
+        elif((j,i) in seen):
+            row+=y
         else:
             row+="O"
     print(row)

@@ -12,8 +12,7 @@ for i in range(len(parsed)):
     for j in range(len(parsed[0])):
         if(parsed[i][j] == "S"):
             start_x,start_y = j,i
-    
-nbours = [(-1,0, "left"), (0,1, "down"), (1,0, "right"), (0,-1, "up")]    
+
 can_enter_from_left = {"-", "J", "7"}
 can_enter_from_right = {"-", "L", "F"}
 can_enter_from_up = {"|", "L", "J"}
@@ -32,10 +31,10 @@ can_go_towards = {"J" : [(-1,0, "left"),(0,-1, "up") ], "7" : [(-1,0, "left"),(0
 def get_neighbours(x,y,grid):
     to_return_nbours = []
     for nx,ny,direction in can_go_towards[grid[y][x]]:
-        ce = can_enter[direction]
+        can_enter_check = can_enter_check[direction]
         cx,cy = x+nx,y+ny
         
-        if(0 <= cy < len(grid) and 0<= cx < len(grid[0]) and grid[cy][cx] in ce):
+        if(0 <= cy < len(grid) and 0<= cx < len(grid[0]) and grid[cy][cx] in can_enter_check):
             to_return_nbours.append((cx,cy))
     return to_return_nbours
         

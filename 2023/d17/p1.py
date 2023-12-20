@@ -16,14 +16,14 @@ grid = [[(float("inf"), None, None, None) for _ in range(len(heat_values[0]))] f
 nbours = [(-1,0, LEFT), (1,0, RIGHT), (0,1, DOWN), (0,-1, UP)]
 def get_nbours(x,y,num_times_same_dir,cur_dir,heat_lost,grid):
     to_return_nbours = []
-    must_change_dir = num_times_same_dir == 2
+    must_change_dir = num_times_same_dir == 3
     allowed_dirs = set([(cur_dir+1)%4,  (cur_dir-1)%4]) if must_change_dir else set([UP, RIGHT, DOWN, LEFT])
     for i,j,direction in [nbour for nbour in nbours if nbour[2] in allowed_dirs]:
         nx,ny = x+i, y+j
         if(not (0 <= ny < len(grid) and 0 <= nx < len(grid[0]))):
             continue
 
-        to_return_nbours.append((nx, ny, direction, 0 if direction != cur_dir else num_times_same_dir+1, heat_lost+heat_values[ny][nx],x,y))
+        to_return_nbours.append((nx, ny, direction, 1 if direction != cur_dir else num_times_same_dir+1, heat_lost+heat_values[ny][nx],x,y))
 
     return to_return_nbours
 
@@ -39,11 +39,12 @@ def BFS(sx,sy,grid):
         # print(f"QUEUE : {queue_str}")
         x,y,direction,num_times_same_dir,heat_lost,came_from_x,came_from_y = queue.pop(0)
         ident = (x,y)
-        
+
         # print(f"Item : {(x,y)}")
-        
-        if(grid[y][x][0] > heat_lost):
+        gt = grid[y][x][0] > heat_lost
+        if(gt):
             grid[y][x] = (heat_lost, came_from_x, came_from_y, direction)        
+            queue += get_nbours(x,y,num_times_same_dir,direction,heat_lost,grid)
             
         if(ident in seen_before):
             continue
@@ -53,16 +54,17 @@ def BFS(sx,sy,grid):
             # seen_before.add((x,y))
             # seen_before.add((x,y))
             # seen_before.add((x,y))
-    
-
+        
         if(y == len(grid)-1 and x == len(grid[0])-1):
             break
         
-                
-        nbours = get_nbours(x,y,num_times_same_dir,direction,heat_lost,grid)
+        if(not gt):
+            queue += get_nbours(x,y,num_times_same_dir,direction,heat_lost,grid)
+
+        # nbours = get_nbours(x,y,num_times_same_dir,direction,heat_lost,grid)
         # print(f"nbours : {[(nbour[0],nbour[1],nbour[4]) for nbour in nbours]}")
         # input()
-        queue = queue+nbours
+        # queue = queue+nbours
     
         
 BFS(0,0,grid)
@@ -86,13 +88,14 @@ for i in range(len(grid)):
         row += dir_symbol[path_with_dir[(j,i)]] if (j,i) in path else "."
     print(row)
 
-heat_calc = sum(heat_values[j][i] for i,j in path)
+heat_lost = sum(heat_values[j][i] for i,j in path)
     
-print(heat_calc+heat_values[-1][-1]-heat_values[path_first[1]][path_first[0]])
+print(heat_lost+heat_values[-1][-1]-heat_values[path_first[1]][path_first[0]])
 print(grid[-1][-1][0])
 
 t2 = perf_counter()
 print(f"Time : {(t2-t1)*1000:.2f}ms")
 
 # 850 -- TOO HIGH
+# 701 -- NOT GOOD
 # 663 -- TOO LOW

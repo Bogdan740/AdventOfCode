@@ -3,11 +3,10 @@ from time import perf_counter
 t1 = perf_counter()
 
 lines = []
-with open("test.txt", "r") as fp:
+with open("input.txt", "r") as fp:
     lines = fp.read().split("\n")
 
 parsed = [(line.split(" ")[0],int(line.split(" ")[1]),line.split(" ")[2][2:-1]) for line in lines]
-print(parsed)
 vertices = [(0,0)]
 x,y = 0,0
 perim = 0

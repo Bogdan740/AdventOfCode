@@ -11,7 +11,7 @@ right = sorted([int(i.split("   ")[1]) for i in lines])
 end = perf_counter()
 
 # Output
-print(sum(abs(i-j) for (i,j) in zip(left, right)))
+print(sum(i * right.count(i) for i in left))
 print(f"Time: {(end-start) * 1000:.2f}ms")
 
 # Best time

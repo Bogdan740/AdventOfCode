@@ -8,10 +8,12 @@ start = perf_counter()
 #  Solution
 
 total = 0
-
-for i in [k for k in range(len(lines)) if 1 <= k < len(lines)-1]:
-    for j in [k for k in range(len(lines[i])) if 1 <= k < len(lines)-1]:
+inner_range = [k for k in range(len(lines)) if 1 <= k < len(lines)-1]
+for i in inner_range:
+    for j in inner_range:
         center = lines[i][j]
+        if(center != "A"):
+            continue
         tl = lines[i-1][j-1]
         tr = lines[i-1][j+1]
         br = lines[i+1][j+1]
@@ -28,4 +30,4 @@ print(total)
 print(f"Time: {(end-start) * 1000:.2f}ms")
 
 # Best time
-# 8.83ms
+# 3.01ms

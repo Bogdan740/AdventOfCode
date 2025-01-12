@@ -1,0 +1,18 @@
+from time import perf_counter
+
+with open("test.txt", "r") as f:
+    lines = f.read().split("\n")
+    
+start = perf_counter()
+
+#  Solution
+
+# Output
+
+end = perf_counter()
+
+# Solution output goes here
+print(f"Time: {(end-start) * 1000:.2f}ms")
+
+# Best time
+# TODO

@@ -40,4 +40,4 @@ end = perf_counter()
 print(f"Time: {(end-start) * 1000:.2f}ms")
 
 # Best time
-# TODO
+# 2348ms
